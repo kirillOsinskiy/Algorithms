@@ -79,11 +79,11 @@ public class RBTree<T extends Comparable<T>> {
     private void insertCase3(RBNode<T> node) {
         RBNode<T> uncle = getUncle(node);
         if (uncle != null && uncle.isRed()) {
-            RBNode<T> granpa = getGrandparent(node);
+            RBNode<T> grandparent = getGrandparent(node);
             node.getParent().setColor(Color.BLACK);
             uncle.setColor(Color.BLACK);
-            granpa.setColor(Color.RED);
-            insertCase1(granpa);
+            grandparent.setColor(Color.RED);
+            insertCase1(grandparent);
         } else {
             insertCase4(node);
         }
@@ -101,13 +101,13 @@ public class RBTree<T extends Comparable<T>> {
     }
 
     private void insertCase5(RBNode<T> node) {
-        RBNode<T> granpa = getGrandparent(node);
+        RBNode<T> grandparent = getGrandparent(node);
         node.getParent().setColor(Color.BLACK);
-        granpa.setColor(Color.RED);
+        grandparent.setColor(Color.RED);
         if (node.isLeft() && node.getParent().isLeft()) {
-            rotateRight(granpa);
+            rotateRight(grandparent);
         } else {
-            rotateLeft(granpa);
+            rotateLeft(grandparent);
         }
     }
 
@@ -125,10 +125,6 @@ public class RBTree<T extends Comparable<T>> {
             return null;
         }
         return parent.getParent();
-    }
-
-    void setRoot(RBNode<T> root) {
-        this.root = root;
     }
 
     public RBNode<T> getRoot() {
