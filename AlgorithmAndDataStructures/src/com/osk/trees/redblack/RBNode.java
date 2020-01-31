@@ -45,13 +45,13 @@ public class RBNode<T extends Comparable<T>> {
         return childRight;
     }
 
-    public void setChildLeft(RBNode<T> childLeft) {
+    void setChildLeft(RBNode<T> childLeft) {
         this.childLeft = childLeft;
         childLeft.setSide(Side.LEFT);
         childLeft.setParent(this);
     }
 
-    public void setChildRight(RBNode<T> childRight) {
+    void setChildRight(RBNode<T> childRight) {
         this.childRight = childRight;
         childRight.setSide(Side.RIGHT);
         childRight.setParent(this);
@@ -112,7 +112,7 @@ public class RBNode<T extends Comparable<T>> {
     }
 
     void remove() {
-
+        // todo implement this
     }
 
     Collection<T> getElements(Collection<T> elements) {
@@ -125,7 +125,7 @@ public class RBNode<T extends Comparable<T>> {
     RBNode<T> findNodeForInsertKey(T targetKey) {
         if (isDummy()) return this;
         if (targetKey.compareTo(key) == 0) {
-            System.err.println("Key already exists " + targetKey);
+//            System.err.println("Key already exists " + targetKey);
             return null;
         } else if (targetKey.compareTo(key) < 0) {
             return childLeft.findNodeForInsertKey(targetKey);

@@ -18,7 +18,7 @@ public class RBTree<T extends Comparable<T>> {
         }
     }
 
-    public void rotateLeft(RBNode<T> node) {
+    private void rotateLeft(RBNode<T> node) {
         if (node.getChildRight().isDummy()) return;
         RBNode<T> pivot = node.getChildRight();
         RBNode<T> parent = node.getParent();
@@ -35,7 +35,7 @@ public class RBTree<T extends Comparable<T>> {
         pivot.setChildLeft(node);
     }
 
-    public void rotateRight(RBNode<T> node) {
+    private void rotateRight(RBNode<T> node) {
         if (node.getChildLeft().isDummy()) return;
         RBNode<T> pivot = node.getChildLeft();
         RBNode<T> parent = node.getParent();
@@ -71,9 +71,7 @@ public class RBTree<T extends Comparable<T>> {
     }
 
     private void insertCase2(RBNode<T> node) {
-        if (node.getParent().isBlack()) {
-            return;
-        } else {
+        if (!node.getParent().isBlack()) {
             insertCase3(node);
         }
     }
@@ -138,6 +136,7 @@ public class RBTree<T extends Comparable<T>> {
     }
 
     public void remove(T key) {
+        // todo implement this
         RBNode<T> target = root.findNodeByKey(key);
         target.remove();
     }
