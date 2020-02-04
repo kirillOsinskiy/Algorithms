@@ -18,10 +18,18 @@ public class RBTreeTest {
         List<Integer> data = new ArrayList<>();
         for (int i = 0; i < 1000; i++) {
             int num = r.nextInt(1000);
-//            System.out.println("Iter " + i + "; num = " + num);
             data.add(num);
             tree.insert(num);
             testRBTree(tree, data);
+        }
+
+        Set<Integer> data1 = new TreeSet<>(data);
+        data1.add(0);
+        for (Integer num : data) {
+            tree.remove(num);
+            data1.remove(num);
+            assertEquals(data1, tree.getAllElements());
+            testRBTree(tree, data1);
         }
     }
 
@@ -29,10 +37,19 @@ public class RBTreeTest {
     public void testSimpleSequence() {
         List<Integer> data = new ArrayList<>();
         for (int i = 0; i < 1000; i++) {
-//            System.out.println("Iter " + i);
             data.add(i);
         }
-        testRBTree(new RBTree<>(data), data);
+        RBTree<Integer> tree = new RBTree<>(data);
+        testRBTree(tree, data);
+
+        Set<Integer> data1 = new TreeSet<>(data);
+        data1.add(0);
+        for (Integer num : data) {
+            tree.remove(num);
+            data1.remove(num);
+            assertEquals(data1, tree.getAllElements());
+            testRBTree(tree, data1);
+        }
     }
 
     @Test
@@ -45,7 +62,19 @@ public class RBTreeTest {
     }
 
     private void numDataTest(List<Integer> data) {
-        testRBTree(new RBTree<>(data), data);
+        RBTree<Integer> tree = new RBTree<>(data);
+        testRBTree(tree, data);
+        testRemoveRBTree(tree, data);
+    }
+
+    private void testRemoveRBTree(RBTree<Integer> tree, List<Integer> data) {
+        Set<Integer> data1 = new TreeSet<>(data);
+        for (Integer num : data) {
+            tree.remove(num);
+            data1.remove(num);
+            assertEquals(data1, tree.getAllElements());
+            testRBTree(tree, data1);
+        }
     }
 
     private void testRBTree(RBTree<Integer> tree, Collection<Integer> data) {

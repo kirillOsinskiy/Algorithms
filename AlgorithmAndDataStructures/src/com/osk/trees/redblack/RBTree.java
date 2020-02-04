@@ -1,8 +1,6 @@
 package com.osk.trees.redblack;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class RBTree<T extends Comparable<T>> {
 
@@ -127,18 +125,140 @@ public class RBTree<T extends Comparable<T>> {
         return parent.getParent();
     }
 
+    private void replaceWithNode(RBNode<T> node, RBNode<T> child) {
+        RBNode<T> parent = node.getParent();
+        if(parent != null) {
+            if (node.isLeft()) parent.setChildLeft(child);
+            else parent.setChildRight(child);
+        } else {
+            child.setParent(null);
+            child.setSide(null);
+            root = child;
+        }
+    }
+
+    private void deleteOneChild(RBNode<T> node) {
+        if (!node.getChildLeft().isDummy() && !node.getChildRight().isDummy()) return;
+
+        RBNode<T> child = node.getChildLeft().isDummy() ? node.getChildRight() : node.getChildLeft();
+        replaceWithNode(node, child);
+        if (node.isBlack()) {
+            if (child.isRed()) {
+                child.setColor(Color.BLACK);
+            } else {
+                deleteCase1(child);
+            }
+        }
+    }
+
+    private void deleteCase1(RBNode<T> node) {
+        if (node.getParent() != null) deleteCase2(node);
+    }
+
+    private void deleteCase2(RBNode<T> node) {
+        RBNode<T> sibling = node.getSibling();
+        if (sibling.isRed()) {
+            node.getParent().setColor(Color.RED);
+            sibling.setColor(Color.BLACK);
+            if (node.isLeft()) {
+                rotateLeft(node.getParent());
+            } else {
+                rotateRight(node.getParent());
+            }
+        }
+        deleteCase3(node);
+    }
+
+    private void deleteCase3(RBNode<T> node) {
+        RBNode<T> sibling = node.getSibling();
+        if (node.getParent().isBlack()
+                && sibling.isBlack()
+                && sibling.getChildLeft().isBlack()
+                && sibling.getChildRight().isBlack()) {
+            sibling.setColor(Color.RED);
+            deleteCase1(node.getParent());
+        } else {
+            deleteCase4(node);
+        }
+    }
+
+    private void deleteCase4(RBNode<T> node) {
+        RBNode<T> sibling = node.getSibling();
+
+        if (node.getParent().isRed() &&
+                sibling.isBlack() &&
+                sibling.getChildLeft().isBlack() &&
+                sibling.getChildRight().isBlack()) {
+            sibling.setColor(Color.RED);
+            node.getParent().setColor(Color.BLACK);
+        } else {
+            deleteCase5(node);
+        }
+    }
+
+    private void deleteCase5(RBNode<T> node) {
+
+        RBNode<T> sibling = node.getSibling();
+
+        if (sibling.isBlack()) {
+            if (node.isLeft()
+                    && sibling.getChildRight().isBlack()
+                    && sibling.getChildLeft().isRed()) {/* this last test is trivial too due to cases 2-4. */
+                sibling.setColor(Color.RED);
+                sibling.getChildLeft().setColor(Color.BLACK);
+                rotateRight(sibling);
+            } else if (node.isRight()
+                    && sibling.getChildLeft().isBlack()
+                    && sibling.getChildRight().isRed()) {/* this last test is trivial too due to cases 2-4. */
+                sibling.setColor(Color.RED);
+                sibling.getChildRight().setColor(Color.BLACK);
+                rotateLeft(sibling);
+            }
+        }
+        deleteCase6(node);
+    }
+
+    private void deleteCase6(RBNode<T> node) {
+        RBNode<T> sibling = node.getSibling();
+
+        sibling.setColor(node.getParent().getColor());
+        node.getParent().setColor(Color.BLACK);
+
+        if (node.isLeft()) {
+            sibling.getChildRight().setColor(Color.BLACK);
+            rotateLeft(node.getParent());
+        } else {
+            sibling.getChildLeft().setColor(Color.BLACK);
+            rotateRight(node.getParent());
+        }
+    }
+
     public RBNode<T> getRoot() {
         return root;
     }
 
     public void remove(T key) {
-        // todo implement this
         RBNode<T> target = root.findNodeByKey(key);
-        target.remove();
+        if(target == null) return;
+        if(!target.getChildLeft().isDummy() && !target.getChildRight().isDummy()) {
+            RBNode<T> maxNode = findMaxNode(target.getChildLeft());
+            T buf = target.getKey();
+            target.setKey(maxNode.getKey());
+            maxNode.setKey(buf);
+            target = maxNode;
+        }
+        deleteOneChild(target);
+    }
+
+    private RBNode<T> findMaxNode(RBNode<T> node) {
+        while(!node.getChildRight().isDummy()) {
+            node = node.getChildRight();
+        }
+        return node;
     }
 
     public Collection<T> getAllElements() {
-        List<T> elements = new ArrayList<>();
-        return root.getElements(elements);
+        Set<T> elements = new TreeSet<>();
+        return root.isDummy() ? elements : root.getElements(elements);
     }
 }

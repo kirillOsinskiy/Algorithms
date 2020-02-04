@@ -81,7 +81,7 @@ public class RBNode<T extends Comparable<T>> {
         this.side = side;
     }
 
-    public Color getColor() {
+    Color getColor() {
         return color;
     }
 
@@ -102,6 +102,9 @@ public class RBNode<T extends Comparable<T>> {
     }
 
     RBNode<T> findNodeByKey(T targetKey) {
+        if(key == null) {
+            return null;
+        }
         if (targetKey.compareTo(key) == 0) {
             return this;
         } else if (targetKey.compareTo(key) < 0) {
@@ -112,13 +115,20 @@ public class RBNode<T extends Comparable<T>> {
     }
 
     void remove() {
-        // todo implement this
+        key = null;
+        childRight = null;
+        childLeft = null;
+        color = Color.BLACK;
+    }
+
+    RBNode<T> getSibling() {
+        return isLeft() ? parent.getChildRight() : parent.getChildLeft();
     }
 
     Collection<T> getElements(Collection<T> elements) {
-        if (childLeft != null) childLeft.getElements(elements);
+        if (!childLeft.isDummy()) childLeft.getElements(elements);
         elements.add(key);
-        if (childRight != null) childRight.getElements(elements);
+        if (!childRight.isDummy()) childRight.getElements(elements);
         return elements;
     }
 
