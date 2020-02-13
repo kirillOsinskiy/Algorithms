@@ -97,10 +97,6 @@ public class RBNode<T extends Comparable<T>> {
         return Side.LEFT.equals(side);
     }
 
-    private boolean isRoot() {
-        return parent == null && side == null;
-    }
-
     RBNode<T> findNodeByKey(T targetKey) {
         if(key == null) {
             return null;
@@ -112,13 +108,6 @@ public class RBNode<T extends Comparable<T>> {
         } else {
             return childRight.findNodeByKey(targetKey);
         }
-    }
-
-    void remove() {
-        key = null;
-        childRight = null;
-        childLeft = null;
-        color = Color.BLACK;
     }
 
     RBNode<T> getSibling() {
