@@ -2,7 +2,7 @@ package com.osk.trees;
 
 public class BinaryTree<T extends Comparable<T>> {
 
-    private Node<T> root;
+    protected Node<T> root;
 
     public BinaryTree(T key) {
         this.root = new Node<>(null, key, null);
@@ -22,26 +22,31 @@ public class BinaryTree<T extends Comparable<T>> {
         }
     }
 
-    public void insert(T key) {
-        insert(key, root);
+    public Node<T> insert(T key) {
+        return insert(key, root);
     }
 
-    private void insert(T key, Node<T> node) {
+    private Node<T> insert(T key, Node<T> node) {
         if (node.getKey().compareTo(key) != 0) {
             if(node.getKey().compareTo(key) > 0) {
                 if(node.getLeft() == null) {
-                    node.setLeft(new Node<>(node, key, Side.LEFT));
+                    Node<T> res = new Node<>(node, key, Side.LEFT);
+                    node.setLeft(res);
+                    return res;
                 } else {
-                    insert(key, node.getLeft());
+                    return insert(key, node.getLeft());
                 }
             } else if(node.getKey().compareTo(key) < 0) {
                 if(node.getRight() == null) {
-                    node.setRight(new Node<>(node, key, Side.RIGHT));
+                    Node<T> res = new Node<>(node, key, Side.RIGHT);
+                    node.setRight(res);
+                    return res;
                 } else {
-                    insert(key, node.getRight());
+                    return insert(key, node.getRight());
                 }
             }
         }
+        return null;
     }
 
     public void remove(T key) {
