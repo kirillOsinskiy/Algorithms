@@ -1,28 +1,22 @@
 package com.osk.trees.redblack;
 
+import com.osk.trees.Node;
 import com.osk.trees.Side;
 
 import java.util.Collection;
 
-public class RBNode<T extends Comparable<T>> {
+public class RBNode<T extends Comparable<T>> extends Node<T> {
 
-    private T key;
-    private Side side;
     private Color color;
-    private RBNode<T> parent;
-    private RBNode<T> childLeft;
-    private RBNode<T> childRight;
 
     RBNode(T key, RBNode<T> parent, Color color, Side side) {
-        this.key = key;
-        this.parent = parent;
+        super(parent, key, side);
         this.color = color;
-        this.side = side;
     }
 
     void addDummyBlackLeaves() {
-        childLeft = new RBNode<>(null, this, Color.BLACK, Side.LEFT);
-        childRight = new RBNode<>(null, this, Color.BLACK, Side.RIGHT);
+        left = new RBNode<>(null, this, Color.BLACK, Side.LEFT);
+        right = new RBNode<>(null, this, Color.BLACK, Side.RIGHT);
     }
 
     boolean isDummy() {
@@ -37,48 +31,31 @@ public class RBNode<T extends Comparable<T>> {
         return color.equals(Color.BLACK);
     }
 
-    public RBNode<T> getChildLeft() {
-        return childLeft;
+    @Override
+    public RBNode<T> getLeft() {
+        return (RBNode<T>) left;
     }
 
-    public RBNode<T> getChildRight() {
-        return childRight;
+    @Override
+    public RBNode<T> getRight() {
+        return (RBNode<T>) right;
+    }
+
+    @Override
+    public RBNode<T> getParent() {
+        return (RBNode<T>) parent;
     }
 
     void setChildLeft(RBNode<T> childLeft) {
-        this.childLeft = childLeft;
+        this.left = childLeft;
         childLeft.setSide(Side.LEFT);
         childLeft.setParent(this);
     }
 
     void setChildRight(RBNode<T> childRight) {
-        this.childRight = childRight;
+        this.right = childRight;
         childRight.setSide(Side.RIGHT);
         childRight.setParent(this);
-    }
-
-    public RBNode<T> getParent() {
-        return parent;
-    }
-
-    void setParent(RBNode<T> parent) {
-        this.parent = parent;
-    }
-
-    public T getKey() {
-        return key;
-    }
-
-    void setKey(T key) {
-        this.key = key;
-    }
-
-    public Side getSide() {
-        return side;
-    }
-
-    void setSide(Side side) {
-        this.side = side;
     }
 
     Color getColor() {
@@ -89,35 +66,27 @@ public class RBNode<T extends Comparable<T>> {
         this.color = color;
     }
 
-    boolean isRight() {
-        return Side.RIGHT.equals(side);
-    }
-
-    boolean isLeft() {
-        return Side.LEFT.equals(side);
-    }
-
     RBNode<T> findNodeByKey(T targetKey) {
-        if(key == null) {
+        if (key == null) {
             return null;
         }
         if (targetKey.compareTo(key) == 0) {
             return this;
         } else if (targetKey.compareTo(key) < 0) {
-            return childLeft.findNodeByKey(targetKey);
+            return getLeft().findNodeByKey(targetKey);
         } else {
-            return childRight.findNodeByKey(targetKey);
+            return getRight().findNodeByKey(targetKey);
         }
     }
 
     RBNode<T> getSibling() {
-        return isLeft() ? parent.getChildRight() : parent.getChildLeft();
+        return isLeft() ? getParent().getRight() : getParent().getLeft();
     }
 
     Collection<T> getElements(Collection<T> elements) {
-        if (!childLeft.isDummy()) childLeft.getElements(elements);
+        if (!getLeft().isDummy()) getLeft().getElements(elements);
         elements.add(key);
-        if (!childRight.isDummy()) childRight.getElements(elements);
+        if (!getRight().isDummy()) getRight().getElements(elements);
         return elements;
     }
 
@@ -127,9 +96,9 @@ public class RBNode<T extends Comparable<T>> {
 //            System.err.println("Key already exists " + targetKey);
             return null;
         } else if (targetKey.compareTo(key) < 0) {
-            return childLeft.findNodeForInsertKey(targetKey);
+            return getLeft().findNodeForInsertKey(targetKey);
         } else {
-            return childRight.findNodeForInsertKey(targetKey);
+            return getRight().findNodeForInsertKey(targetKey);
         }
     }
 }

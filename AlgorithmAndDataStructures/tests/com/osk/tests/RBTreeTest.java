@@ -88,12 +88,12 @@ public class RBTreeTest {
     }
 
     private void testSearchTreeValid(RBNode<Integer> node) {
-        RBNode<Integer> childLeft = node.getChildLeft();
+        RBNode<Integer> childLeft = node.getLeft();
         if (childLeft != null && childLeft.getKey() != null) {
             assertTrue(node.getKey().compareTo(childLeft.getKey()) > 0);
             testSearchTreeValid(childLeft);
         }
-        RBNode<Integer> childRight = node.getChildRight();
+        RBNode<Integer> childRight = node.getRight();
         if (childRight != null && childRight.getKey() != null) {
             assertTrue(node.getKey().compareTo(childRight.getKey()) < 0);
             testSearchTreeValid(childRight);
@@ -124,11 +124,11 @@ public class RBTreeTest {
     }
 
     private List<RBNode<Integer>> collectChildren(RBNode<Integer> node, List<RBNode<Integer>> children) {
-        if (node.getChildRight() == null && node.getChildLeft() == null) {
+        if (node.getRight() == null && node.getLeft() == null) {
             children.add(node);
         } else {
-            if (node.getChildLeft() != null) collectChildren(node.getChildLeft(), children);
-            if (node.getChildRight() != null) collectChildren(node.getChildRight(), children);
+            if (node.getLeft() != null) collectChildren(node.getLeft(), children);
+            if (node.getRight() != null) collectChildren(node.getRight(), children);
         }
         return children;
     }
@@ -144,10 +144,10 @@ public class RBTreeTest {
 
     private void testRedNodeHasBlackChildren(RBNode<Integer> node) {
         if (node.isRed()) {
-            if (node.getChildLeft() != null) assertTrue(node.getChildLeft().isBlack());
-            if (node.getChildRight() != null) assertTrue(node.getChildRight().isBlack());
+            if (node.getLeft() != null) assertTrue(node.getLeft().isBlack());
+            if (node.getRight() != null) assertTrue(node.getRight().isBlack());
         }
-        if (node.getChildLeft() != null) testRedNodeHasBlackChildren(node.getChildLeft());
-        if (node.getChildRight() != null) testRedNodeHasBlackChildren(node.getChildRight());
+        if (node.getLeft() != null) testRedNodeHasBlackChildren(node.getLeft());
+        if (node.getRight() != null) testRedNodeHasBlackChildren(node.getRight());
     }
 }

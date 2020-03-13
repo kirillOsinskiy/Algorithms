@@ -17,8 +17,8 @@ public class RBTree<T extends Comparable<T>> {
     }
 
     private void rotateLeft(RBNode<T> node) {
-        if (node.getChildRight().isDummy()) return;
-        RBNode<T> pivot = node.getChildRight();
+        if (node.getRight().isDummy()) return;
+        RBNode<T> pivot = node.getRight();
         RBNode<T> parent = node.getParent();
 
         if (parent != null) {
@@ -29,13 +29,13 @@ public class RBTree<T extends Comparable<T>> {
             pivot.setSide(null);
             root = pivot;
         }
-        node.setChildRight(pivot.getChildLeft());
+        node.setChildRight(pivot.getLeft());
         pivot.setChildLeft(node);
     }
 
     private void rotateRight(RBNode<T> node) {
-        if (node.getChildLeft().isDummy()) return;
-        RBNode<T> pivot = node.getChildLeft();
+        if (node.getLeft().isDummy()) return;
+        RBNode<T> pivot = node.getLeft();
         RBNode<T> parent = node.getParent();
 
         if (parent != null) {
@@ -47,7 +47,7 @@ public class RBTree<T extends Comparable<T>> {
             root = pivot;
         }
 
-        node.setChildLeft(pivot.getChildRight());
+        node.setChildLeft(pivot.getRight());
         pivot.setChildRight(node);
     }
 
@@ -90,10 +90,10 @@ public class RBTree<T extends Comparable<T>> {
     private void insertCase4(RBNode<T> node) {
         if (node.isRight() && node.getParent().isLeft()) {
             rotateLeft(node.getParent());
-            node = node.getChildLeft();
+            node = node.getLeft();
         } else if (node.isLeft() && node.getParent().isRight()) {
             rotateRight(node.getParent());
-            node = node.getChildRight();
+            node = node.getRight();
         }
         insertCase5(node);
     }
@@ -114,7 +114,7 @@ public class RBTree<T extends Comparable<T>> {
         if (parent == null || parent.getParent() == null) {
             return null;
         }
-        return parent.isLeft() ? parent.getParent().getChildRight() : parent.getParent().getChildLeft();
+        return parent.isLeft() ? parent.getParent().getRight() : parent.getParent().getLeft();
     }
 
     private RBNode<T> getGrandparent(RBNode<T> node) {
@@ -138,9 +138,9 @@ public class RBTree<T extends Comparable<T>> {
     }
 
     private void deleteOneChild(RBNode<T> node) {
-        if (!node.getChildLeft().isDummy() && !node.getChildRight().isDummy()) return;
+        if (!node.getLeft().isDummy() && !node.getRight().isDummy()) return;
 
-        RBNode<T> child = node.getChildLeft().isDummy() ? node.getChildRight() : node.getChildLeft();
+        RBNode<T> child = node.getLeft().isDummy() ? node.getRight() : node.getLeft();
         replaceWithNode(node, child);
         if (node.isBlack()) {
             if (child.isRed()) {
@@ -173,8 +173,8 @@ public class RBTree<T extends Comparable<T>> {
         RBNode<T> sibling = node.getSibling();
         if (node.getParent().isBlack()
                 && sibling.isBlack()
-                && sibling.getChildLeft().isBlack()
-                && sibling.getChildRight().isBlack()) {
+                && sibling.getLeft().isBlack()
+                && sibling.getRight().isBlack()) {
             sibling.setColor(Color.RED);
             deleteCase1(node.getParent());
         } else {
@@ -187,8 +187,8 @@ public class RBTree<T extends Comparable<T>> {
 
         if (node.getParent().isRed() &&
                 sibling.isBlack() &&
-                sibling.getChildLeft().isBlack() &&
-                sibling.getChildRight().isBlack()) {
+                sibling.getLeft().isBlack() &&
+                sibling.getRight().isBlack()) {
             sibling.setColor(Color.RED);
             node.getParent().setColor(Color.BLACK);
         } else {
@@ -202,16 +202,16 @@ public class RBTree<T extends Comparable<T>> {
 
         if (sibling.isBlack()) {
             if (node.isLeft()
-                    && sibling.getChildRight().isBlack()
-                    && sibling.getChildLeft().isRed()) {/* this last test is trivial too due to cases 2-4. */
+                    && sibling.getRight().isBlack()
+                    && sibling.getLeft().isRed()) {/* this last test is trivial too due to cases 2-4. */
                 sibling.setColor(Color.RED);
-                sibling.getChildLeft().setColor(Color.BLACK);
+                sibling.getLeft().setColor(Color.BLACK);
                 rotateRight(sibling);
             } else if (node.isRight()
-                    && sibling.getChildLeft().isBlack()
-                    && sibling.getChildRight().isRed()) {/* this last test is trivial too due to cases 2-4. */
+                    && sibling.getLeft().isBlack()
+                    && sibling.getRight().isRed()) {/* this last test is trivial too due to cases 2-4. */
                 sibling.setColor(Color.RED);
-                sibling.getChildRight().setColor(Color.BLACK);
+                sibling.getRight().setColor(Color.BLACK);
                 rotateLeft(sibling);
             }
         }
@@ -225,10 +225,10 @@ public class RBTree<T extends Comparable<T>> {
         node.getParent().setColor(Color.BLACK);
 
         if (node.isLeft()) {
-            sibling.getChildRight().setColor(Color.BLACK);
+            sibling.getRight().setColor(Color.BLACK);
             rotateLeft(node.getParent());
         } else {
-            sibling.getChildLeft().setColor(Color.BLACK);
+            sibling.getLeft().setColor(Color.BLACK);
             rotateRight(node.getParent());
         }
     }
@@ -240,8 +240,8 @@ public class RBTree<T extends Comparable<T>> {
     public void remove(T key) {
         RBNode<T> target = root.findNodeByKey(key);
         if(target == null) return;
-        if(!target.getChildLeft().isDummy() && !target.getChildRight().isDummy()) {
-            RBNode<T> maxNode = findMaxNode(target.getChildLeft());
+        if(!target.getLeft().isDummy() && !target.getRight().isDummy()) {
+            RBNode<T> maxNode = findMaxNode(target.getLeft());
             T buf = target.getKey();
             target.setKey(maxNode.getKey());
             maxNode.setKey(buf);
@@ -251,8 +251,8 @@ public class RBTree<T extends Comparable<T>> {
     }
 
     private RBNode<T> findMaxNode(RBNode<T> node) {
-        while(!node.getChildRight().isDummy()) {
-            node = node.getChildRight();
+        while(!node.getRight().isDummy()) {
+            node = node.getRight();
         }
         return node;
     }

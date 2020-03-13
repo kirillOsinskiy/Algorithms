@@ -8,12 +8,74 @@ public class BinaryTree<T extends Comparable<T>> {
         this.root = new Node<>(null, key, null);
     }
 
+    public Node<T> find(T key) {
+        return find(key, root);
+    }
+
+    private Node<T> find(T key, Node<T> node) {
+        if(node == null) return null;
+        if(node.getKey().equals(key)) return node;
+        if(node.getKey().compareTo(key) > 0) {
+            return find(key, node.getLeft());
+        } else {
+            return find(key, node.getRight());
+        }
+    }
+
     public void insert(T key) {
-        root.insert(key);
+        insert(key, root);
+    }
+
+    private void insert(T key, Node<T> node) {
+        if (node.getKey().compareTo(key) != 0) {
+            if(node.getKey().compareTo(key) > 0) {
+                if(node.getLeft() == null) {
+                    node.setLeft(new Node<>(node, key, Side.LEFT));
+                } else {
+                    insert(key, node.getLeft());
+                }
+            } else if(node.getKey().compareTo(key) < 0) {
+                if(node.getRight() == null) {
+                    node.setRight(new Node<>(node, key, Side.RIGHT));
+                } else {
+                    insert(key, node.getRight());
+                }
+            }
+        }
     }
 
     public void remove(T key) {
-        root.remove(key);
+        Node<T> rmNode = find(key);
+        if(rmNode != null) remove(rmNode);
+    }
+
+    private void remove(Node<T> node) {
+        Node<T> p = node.getParent();
+        if(node.getLeft() == null && node.getRight() == null) {
+            if(node.isLeft()) p.setLeft(null);
+            else if(node.isRight()) p.setRight(null);
+        } else if(node.getLeft() == null || node.getRight() == null) {
+            Node<T> child = node.getRight() == null ? node.getLeft() : node.getRight();
+            if(node.isLeft()) p.setLeft(child);
+            else if(node.isRight()) p.setRight(child);
+        } else {
+            Node<T> r = node.getRight();
+            if(r.getLeft() == null) {
+                Node<T> l = node.getLeft();
+                r.setLeft(l);
+                if(node.isRight()) p.setRight(r);
+                else if(node.isLeft()) p.setLeft(r);
+            } else {
+                Node<T> mlRight = getMaximumLeft(node.getRight());
+                node.setKey(mlRight.getKey());
+                remove(mlRight);
+            }
+        }
+    }
+
+    private Node<T> getMaximumLeft(Node<T> node) {
+        if(node.getLeft() == null) return node;
+        else return getMaximumLeft(node.getLeft());
     }
 
     public void visit() {
@@ -29,18 +91,13 @@ public class BinaryTree<T extends Comparable<T>> {
     }
 
     public T successor(T key) {
-        Node<T> successor = findNodeByKey(key).successor();
+        Node<T> successor = find(key).successor();
         return successor != null ? successor.getKey() : null;
     }
 
     public T predecessor(T key) {
-        Node<T> predecessor = findNodeByKey(key).predecessor();
+        Node<T> predecessor = find(key).predecessor();
         return predecessor != null ? predecessor.getKey() : null;
-    }
-
-    private Node<T> findNodeByKey(T key) {
-        if(root.getKey().equals(key)) return root;
-        else return root.findChildByKey(key);
     }
 
     @Override

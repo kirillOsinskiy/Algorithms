@@ -29,10 +29,11 @@ public class BinaryTreeTest {
 
     @Test
     public void testRemove() {
-        tree.remove(1);
-        assertEquals("[2 3 4 5 6 7 ]", tree.toString());
+        tree.remove(4);
+        assertEquals("[1 2 3 5 6 7 ]", tree.toString());
         tree.remove(2);
-        assertEquals("[3 4 5 6 7 ]", tree.toString());
+        assertEquals("[1 3 5 6 7 ]", tree.toString());
+
     }
 
     @Test
