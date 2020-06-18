@@ -252,6 +252,11 @@ public class AlgorithmsTest {
         assertEquals(-1, rs.findMin(Arrays.copyOf(arr, arr.length)));
         assertEquals(9, rs.findMax(Arrays.copyOf(arr, arr.length)));
         assertEquals(3, rs.findMed(Arrays.copyOf(arr, arr.length)));
+
+        arr = new int[]{0};
+        assertEquals(0, rs.findMin(Arrays.copyOf(arr, arr.length)));
+        assertEquals(0, rs.findMax(Arrays.copyOf(arr, arr.length)));
+        assertEquals(0, rs.findMed(Arrays.copyOf(arr, arr.length)));
     }
 
     private void testSorting(int[] arr, int[] expected) {

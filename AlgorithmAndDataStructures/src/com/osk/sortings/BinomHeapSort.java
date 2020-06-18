@@ -1,6 +1,6 @@
 package com.osk.sortings;
 
-import com.osk.mycol.BinomHeap;
+import com.osk.mycol.BinomialHeap;
 
 public class BinomHeapSort implements Sorting {
 
@@ -11,7 +11,7 @@ public class BinomHeapSort implements Sorting {
         for (int i = 0; i < arr.length; i++) {
             integers[i] = arr[i];
         }
-        BinomHeap<Integer> heap = new BinomHeap<>(integers);
+        BinomialHeap<Integer> heap = new BinomialHeap<>(integers);
 
         int[] res = new int[arr.length];
         int i = 0;
