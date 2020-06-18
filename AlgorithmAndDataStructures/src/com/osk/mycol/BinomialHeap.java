@@ -1,25 +1,25 @@
 package com.osk.mycol;
 
-public class BinomHeap<T extends Comparable<T>> implements Heap<T>, Comparable<BinomHeap<T>> {
+public class BinomialHeap<T extends Comparable<T>> implements Heap<T>, Comparable<BinomialHeap<T>> {
 
     private Node<T> root;
 
-    public BinomHeap(T[] data) {
+    public BinomialHeap(T[] data) {
         if(data.length != 0) {
-            BinomHeap<T> heap = new BinomHeap<>(data[0]);
+            BinomialHeap<T> heap = new BinomialHeap<>(data[0]);
             for (int i = 1; i < data.length; i++) {
-                heap = heap.meldHeap(new BinomHeap<>(data[i]));
+                heap = heap.meldHeap(new BinomialHeap<>(data[i]));
             }
             root = heap.root;
         }
     }
 
-    public BinomHeap(T data) {
+    public BinomialHeap(T data) {
         root = new Node<>(data);
     }
 
     public void insert(T data) {
-        BinomHeap<T> singleHeap = new BinomHeap<>(data);
+        BinomialHeap<T> singleHeap = new BinomialHeap<>(data);
         this.meldHeap(singleHeap);
     }
 
@@ -115,7 +115,7 @@ public class BinomHeap<T extends Comparable<T>> implements Heap<T>, Comparable<B
         }
     }
 
-    public BinomHeap<T> meldHeap(BinomHeap<T> other) {
+    public BinomialHeap<T> meldHeap(BinomialHeap<T> other) {
         if (this.compareTo(other) > 0) {
             other.root.addChild(root);
             return other;
@@ -169,7 +169,7 @@ public class BinomHeap<T extends Comparable<T>> implements Heap<T>, Comparable<B
     }
 
     @Override
-    public int compareTo(BinomHeap<T> o) {
+    public int compareTo(BinomialHeap<T> o) {
         return root.compareTo(o.root);
     }
 }
