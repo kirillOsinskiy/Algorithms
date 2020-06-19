@@ -22,6 +22,12 @@ public class BinaryTree<T extends Comparable<T>> {
         }
     }
 
+    public void setRoot(Node<T> root) {
+        this.root = root;
+        root.setParent(null);
+        root.setSide(null);
+    }
+
     public Node<T> insert(T key) {
         return insert(key, root);
     }
