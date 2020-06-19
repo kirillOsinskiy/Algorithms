@@ -20,20 +20,20 @@ public class SplayTree<T extends Comparable<T>> extends BinaryTree<T> {
         return node;
     }
 
-    void transplant(Node<T> node, Node<T> child) {
+    private void transplant(Node<T> node, Node<T> child) {
         if (node.getParent() == null) setRoot(child);
         else if (node.isLeft()) node.getParent().setLeft(child);
         else if (node.isRight()) node.getParent().setRight(child);
     }
 
-    void leftRotate(Node<T> node) {
+    private void leftRotate(Node<T> node) {
         Node<T> right = node.getRight();
         node.setRight(right.getLeft());
         transplant(node, right);
         right.setLeft(node);
     }
 
-    void rightRotate(Node<T> node) {
+    private void rightRotate(Node<T> node) {
         Node<T> left = node.getLeft();
         node.setLeft(left.getRight());
         transplant(node, left);
@@ -44,9 +44,9 @@ public class SplayTree<T extends Comparable<T>> extends BinaryTree<T> {
         while (node != root) {
             if (node.getParent() == root) {
                 if (node.isLeft())
-                    rightRotate(root);
+                    rightRotate(node.getParent());
                 else if (node.isRight()) {
-                    leftRotate(root);
+                    leftRotate(node.getParent());
                 }
             } else {
                 // Zig-Zig step.
