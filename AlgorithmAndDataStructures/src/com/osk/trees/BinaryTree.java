@@ -60,7 +60,7 @@ public class BinaryTree<T extends Comparable<T>> {
         if(rmNode != null) remove(rmNode);
     }
 
-    private void remove(Node<T> node) {
+    void remove(Node<T> node) {
         Node<T> p = node.getParent();
         if(node.getLeft() == null && node.getRight() == null) {
             if(node.isLeft()) p.setLeft(null);
@@ -76,6 +76,7 @@ public class BinaryTree<T extends Comparable<T>> {
                 r.setLeft(l);
                 if(node.isRight()) p.setRight(r);
                 else if(node.isLeft()) p.setLeft(r);
+                else setRoot(r);
             } else {
                 Node<T> mlRight = getMaximumLeft(node.getRight());
                 node.setKey(mlRight.getKey());

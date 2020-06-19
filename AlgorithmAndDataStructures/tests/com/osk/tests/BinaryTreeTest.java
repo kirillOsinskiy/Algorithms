@@ -1,6 +1,7 @@
 package com.osk.tests;
 
 import com.osk.trees.BinaryTree;
+import com.osk.trees.Node;
 import com.osk.trees.SplayTree;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,13 +33,20 @@ public class BinaryTreeTest {
     public void testSplayTree() {
         tree = new SplayTree<>(4);
 
-        tree.insert(2);
-        tree.insert(6);
-        tree.insert(1);
-        tree.insert(3);
-        tree.insert(5);
-        tree.insert(7);
+        Node<Integer> two = tree.insert(2);
+        Node<Integer> six = tree.insert(6);
+        Node<Integer> one = tree.insert(1);
+        Node<Integer> three = tree.insert(3);
+        Node<Integer> five = tree.insert(5);
+        Node<Integer> seven = tree.insert(7);
         assertEquals("[1 2 3 4 5 6 7 ]", tree.toString());
+
+        assertEquals(one, tree.find(1));
+        assertEquals(two, tree.find(2));
+        assertEquals(three, tree.find(3));
+        assertEquals(five, tree.find(5));
+        assertEquals(six, tree.find(6));
+        assertEquals(seven, tree.find(7));
 
         tree.remove(4);
         assertEquals("[1 2 3 5 6 7 ]", tree.toString());
