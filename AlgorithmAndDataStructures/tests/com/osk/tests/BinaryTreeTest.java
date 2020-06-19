@@ -31,7 +31,7 @@ public class BinaryTreeTest {
 
     @Test
     public void testSplayTree() {
-        tree = new SplayTree<>(4);
+        SplayTree<Integer> tree = new SplayTree<>(4);
 
         Node<Integer> two = tree.insert(2);
         Node<Integer> six = tree.insert(6);
@@ -52,6 +52,15 @@ public class BinaryTreeTest {
         assertEquals("[1 2 3 5 6 7 ]", tree.toString());
         tree.remove(2);
         assertEquals("[1 3 5 6 7 ]", tree.toString());
+
+        SplayTree<Integer> tree2 = new SplayTree<>(11);
+        tree2.insert(19);
+        tree2.insert(21);
+        tree2.insert(15);
+        tree2.insert(13);
+        tree2.insert(18);
+
+        assertEquals("[1 3 5 6 7 11 13 15 18 19 21 ]", SplayTree.merge(tree, tree2).toString());
     }
 
     @Test

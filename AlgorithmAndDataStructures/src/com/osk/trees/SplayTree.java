@@ -20,12 +20,11 @@ public class SplayTree<T extends Comparable<T>> extends BinaryTree<T> {
         return node;
     }
 
-//    @Override
-//    public void remove(T key) {
-//        Node<T> node = find(key);
-//        splay(node);
-//        remove(node);
-//    }
+    public static <T extends Comparable<T>> SplayTree<T> merge(SplayTree<T> t1, SplayTree<T> t2) {
+        t1.splay(t1.getMaximum());
+        t1.getRoot().setRight(t2.getRoot());
+        return t1;
+    }
 
     private void transplant(Node<T> node, Node<T> child) {
         if (node.getParent() == null) setRoot(child);

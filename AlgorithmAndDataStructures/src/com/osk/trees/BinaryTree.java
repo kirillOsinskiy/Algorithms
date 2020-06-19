@@ -22,6 +22,10 @@ public class BinaryTree<T extends Comparable<T>> {
         }
     }
 
+    public Node<T> getRoot() {
+        return root;
+    }
+
     public void setRoot(Node<T> root) {
         this.root = root;
         root.setParent(null);
@@ -115,6 +119,12 @@ public class BinaryTree<T extends Comparable<T>> {
     @Override
     public String toString() {
         return "[" + root + "]";
+    }
+
+    public Node<T> getMaximum() {
+        Node<T> node = root;
+        while(node.getRight() != null) node = node.getRight();
+        return node;
     }
 }
 
