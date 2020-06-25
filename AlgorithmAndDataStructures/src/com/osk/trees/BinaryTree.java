@@ -8,6 +8,10 @@ public class BinaryTree<T extends Comparable<T>> {
         this.root = new Node<>(null, key, null);
     }
 
+    BinaryTree(Node<T> node) {
+        setRoot(node);
+    }
+
     public Node<T> find(T key) {
         return find(key, root);
     }

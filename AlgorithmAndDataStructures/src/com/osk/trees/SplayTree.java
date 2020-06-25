@@ -6,6 +6,10 @@ public class SplayTree<T extends Comparable<T>> extends BinaryTree<T> {
         super(key);
     }
 
+    private SplayTree(Node<T> node) {
+        super(node);
+    }
+
     @Override
     public Node<T> find(T key) {
         Node<T> node = super.find(key);
@@ -18,6 +22,21 @@ public class SplayTree<T extends Comparable<T>> extends BinaryTree<T> {
         Node<T> node = super.insert(key);
         splay(node);
         return node;
+    }
+
+    public void removeWithMerge(T key) {
+        Node<T> node = find(key);
+        if(node.getLeft() != null && node.getRight() != null) {
+            SplayTree<T> t1 = new SplayTree<>(node.getLeft());
+            SplayTree<T> t2 = new SplayTree<>(node.getRight());
+            setRoot(merge(t1, t2).getRoot());
+        } else if(node.getLeft() == null && node.getRight() == null) {
+            setRoot(null);
+        } else if(node.getLeft() == null) {
+            setRoot(node.getRight());
+        } else {
+            setRoot(node.getLeft());
+        }
     }
 
     public static <T extends Comparable<T>> SplayTree<T> merge(SplayTree<T> t1, SplayTree<T> t2) {

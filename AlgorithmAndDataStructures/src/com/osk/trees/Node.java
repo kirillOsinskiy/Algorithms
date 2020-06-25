@@ -99,7 +99,7 @@ public class Node<T extends Comparable<T>> implements Comparable<Node<T>> {
         if (right != null) {
             return findLastLeftChild(right);
         } else {
-            if (side.equals(Side.LEFT)) {
+            if (Side.LEFT.equals(side)) {
                 return parent;
             } else {
                 return findNearestParent(parent, Side.LEFT);
@@ -111,7 +111,7 @@ public class Node<T extends Comparable<T>> implements Comparable<Node<T>> {
         if (left != null) {
             return findLastRightChild(left);
         } else {
-            if (side.equals(Side.RIGHT)) {
+            if (Side.RIGHT.equals(side)) {
                 return parent;
             } else {
                 return findNearestParent(parent, Side.RIGHT);
@@ -120,10 +120,10 @@ public class Node<T extends Comparable<T>> implements Comparable<Node<T>> {
     }
 
     private static <T extends Comparable<T>> Node<T> findNearestParent(Node<T> node, Side side) {
+        if (node == null || node.side == null) return null;
         Node<T> curNode = node;
         Node<T> par = curNode.parent;
         while (curNode.side != null && !curNode.side.equals(side)) {
-            if (curNode.side == null) return null;
             curNode = par;
             par = curNode.parent;
         }
