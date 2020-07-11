@@ -5,17 +5,23 @@ import java.math.BigInteger;
 public class Main {
 
     public static void main(String[] args) {
-//	    PersistentStack<String> stack = new PersistentStack<>();
-//	    stack.push("one");
-//        stack.push("two");
-//        stack.push("three");
-//        stack.push("asdfg");
-//        stack.push("qwe");
-//        System.out.println(stack);
+        B b = new B();
+        System.out.println(b.getRoot().getClass());
+        System.out.println(b.hashCode());
 
-        System.out.println(faktNR(3));
-        System.out.println(faktNR(10));
-        System.out.println(faktNR(Integer.MAX_VALUE));
+        C c = new C();
+
+        System.out.println(finallyTest());
+    }
+
+    public static int finallyTest() {
+        try {
+            throw new RuntimeException();
+        } catch (Exception e) {
+            return 1;
+        } finally {
+            return 2;
+        }
     }
 
     static long fakt(int n) {
@@ -37,6 +43,51 @@ public class Main {
             n--;
         }
         return res;
+    }
+}
+
+class C {
+
+    {
+        System.out.println("instance block");
+    }
+
+    static {
+        System.out.println("static block");
+    }
+
+    public C() {
+        System.out.println("Constructor");
+    }
+}
+
+abstract class ARoot {}
+
+class BRoot extends ARoot {}
+
+abstract class A {
+    protected ARoot root;
+
+    public ARoot getRoot() {
+        return root;
+    }
+}
+
+class B extends A {
+//    public BRoot root;
+
+    public B() {
+        root = new BRoot();
+    }
+
+    @Override
+    public BRoot getRoot() {
+        return (BRoot) root;
+    }
+
+    public static void main(String[] args) {
+        B b = new B();
+        System.out.println(b.getRoot().getClass());
     }
 }
 

@@ -1,11 +1,13 @@
 package com.osk.tests;
 
 import com.osk.trees.BinaryTree;
+import com.osk.trees.Node;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class BinaryTreeTest {
 
@@ -25,6 +27,20 @@ public class BinaryTreeTest {
     @Test
     public void testBinaryTree() {
         assertEquals("[1 2 3 4 5 6 7 ]", tree.toString());
+
+        checkSearchTreeValidity(tree.getRoot());
+    }
+
+    private void checkSearchTreeValidity(Node<Integer> node) {
+        if(node.getLeft() != null) {
+            assertTrue(node.getKey().compareTo(node.getLeft().getKey()) > 0);
+            checkSearchTreeValidity(node.getLeft());
+        }
+
+        if(node.getRight() != null) {
+            assertTrue(node.getKey().compareTo(node.getRight().getKey()) < 0);
+            checkSearchTreeValidity(node.getRight());
+        }
     }
 
     @Test
