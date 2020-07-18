@@ -19,8 +19,10 @@ public abstract class AbstractTree<T extends Comparable<T>, U extends AbstractNo
 
     public void setRoot(U root) {
         this.root = root;
-        root.setParent(null);
-        root.setSide(null);
+        if(root != null) {
+            root.setParent(null);
+            root.setSide(null);
+        }
     }
 
     public U find(T key) {

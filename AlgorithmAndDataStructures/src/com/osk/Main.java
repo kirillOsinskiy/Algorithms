@@ -14,6 +14,10 @@ public class Main {
         System.out.println(finallyTest());
     }
 
+    void test(int ...i) {
+
+    }
+
     public static int finallyTest() {
         try {
             throw new RuntimeException();

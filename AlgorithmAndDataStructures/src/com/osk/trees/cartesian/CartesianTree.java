@@ -1,6 +1,7 @@
 package com.osk.trees.cartesian;
 
 import com.osk.trees.AbstractTree;
+import com.osk.trees.Side;
 
 /**
  * Created by Kirill on 30.06.2020.
@@ -18,132 +19,239 @@ public class CartesianTree<T extends Comparable<T>, U extends Comparable<U>>
     }
 
     public void remove(T key) {
-        SplitResult splitResult = split(key);
-        merge(splitResult.getLesserTree(), splitResult.getGreaterTree());
+        SplitResult<T, U> splitResult = split(key);
+        CartesianNode<T, U> res = merge(splitResult.getLesser(), splitResult.getGreater());
+        setRoot(res);
     }
 
     public CartesianNode<T, U> insert(T key, U prior) {
-        CartesianNode<T, U> res = find(key);
-        if (res != null) return res;
+        CartesianNode<T, U> res = findForInsert(key, prior);
+        CartesianNode<T, U> parent = res.getParent();
+        while (parent != null && parent.getPriority().compareTo(res.getPriority()) > 0) {
+            if (res.isLeft()) rotateRight(res);
+            else rotateLeft(res);
+            parent = res.getParent();
+        }
+        return res;
+    }
 
-        SplitResult splitResult = split(key);
-        CartesianNode<T, U> insertedNode = new CartesianNode<>(null, key, prior, null);
-        CartesianTree<T, U> insertedTree = new CartesianTree<>(insertedNode);
-        merge(
-                merge(splitResult.getLesserTree(), insertedTree)
-                , splitResult.getGreaterTree());
+    private void rotateRight(CartesianNode<T, U> node) {
+        CartesianNode<T, U> right = node.getRight();
+        CartesianNode<T, U> parent = node.getParent();
+        CartesianNode<T, U> gp = parent.getParent();
+        if (gp != null) {
+            if (parent.isLeft()) gp.setLeft(node);
+            else gp.setRight(node);
+        } else {
+            setRoot(node);
+        }
+        node.setRight(parent);
+        parent.setLeft(right);
+    }
+
+    private void rotateLeft(CartesianNode<T, U> node) {
+        CartesianNode<T, U> left = node.getLeft();
+        CartesianNode<T, U> parent = node.getParent();
+        CartesianNode<T, U> gp = parent.getParent();
+        if (gp != null) {
+            if (parent.isLeft()) gp.setLeft(node);
+            else gp.setRight(node);
+        } else {
+            setRoot(node);
+        }
+        node.setLeft(parent);
+        parent.setRight(left);
+    }
+
+    public CartesianNode<T, U> findForInsert(T key, U prior) {
+        return findForInsert(key, prior, root);
+    }
+
+    public CartesianNode<T, U> findForInsert(T key, U prior, CartesianNode<T, U> node) {
+        if (node == null) return new CartesianNode<>(null, key, prior, null);
+        if (node.getKey().equals(key)) return node;
+        if (node.getKey().compareTo(key) > 0) {
+            if (node.getLeft() == null) {
+                CartesianNode<T, U> result = new CartesianNode<>(node, key, prior, Side.LEFT);
+                node.setLeft(result);
+                return result;
+            } else {
+                return findForInsert(key, prior, node.getLeft());
+            }
+        } else {
+            if (node.getRight() == null) {
+                CartesianNode<T, U> result = new CartesianNode<>(node, key, prior, Side.RIGHT);
+                node.setRight(result);
+                return result;
+            } else {
+                return findForInsert(key, prior, node.getRight());
+            }
+        }
+    }
+
+    public CartesianNode<T, U> insertBulk(T key, U prior) {
+        SplitResult<T, U> splitResult = split(key);
+        CartesianNode<T, U> insertedNode = splitResult.getNode();
+
+        if (insertedNode == null) insertedNode = new CartesianNode<>(null, key, prior, null);
+
+        CartesianNode<T, U> result = merge(splitResult.getLesser(), insertedNode);
+        result = merge(result, splitResult.getGreater());
+        setRoot(result);
+
         return insertedNode;
     }
 
     /**
      * Merge trees. All keys in tree1 =< all keys in tree2
      *
-     * @param tree1 tree with smaller keys
-     * @param tree2 tree with greater keys
+     * @param node1 tree with smaller keys
+     * @param node2 tree with greater keys
      * @return merged tree
      */
-    private static <T extends Comparable<T>, U extends Comparable<U>> CartesianTree<T, U> merge(
-            CartesianTree<T, U> tree1, CartesianTree<T, U> tree2) {
-        if (tree1 == null && tree2 == null) return null;
-        else if (tree1 == null) return tree2;
-        else if (tree2 == null) return tree1;
+    private static <T extends Comparable<T>, U extends Comparable<U>> CartesianNode<T, U> merge(
+            CartesianNode<T, U> node1, CartesianNode<T, U> node2) {
+        if (node1 == null && node2 == null) return null;
+        else if (node1 == null) return node2;
+        else if (node2 == null) return node1;
 
-        CartesianNode<T, U> root2 = tree2.getRoot();
-        CartesianNode<T, U> node = tree1.getMaximum();
-        while (node.getPriority().compareTo(root2.getPriority()) > 0) {
-            node = node.getParent();
+        if (node1.getPriority().compareTo(node2.getPriority()) <= 0) {
+            node1.setRight(merge(node1.getRight(), node2));
+            return node1;
+        } else {
+            node2.setLeft(merge(node1, node2.getLeft()));
+            return node2;
         }
-        CartesianNode<T, U> tempTree = node.getRight();
-        node.setRight(root2);
-        if(tempTree != null) {
-            node = tree2.getMinimum();
-            while (node.getPriority().compareTo(tempTree.getPriority()) > 0) {
-                node = node.getParent();
-            }
-            CartesianNode<T, U> left = node.getLeft();
-            node.setLeft(tempTree);
-            while (tempTree.getRight() != null) {
-                tempTree = tempTree.getRight();
-            }
-            tempTree.setRight(left);
-        }
-
-        return tree1;
     }
 
     /**
-     * Split tree by key. If tree contains the key, then result will have two tree and node with that key.
-     * First tree will have keys lesser than split key and second tree will have keys greater than split key.
-     * Otherwise if tree does not contains key, then node in result will be null.
+     * Split tree by key from given node. Key in current node equals to ke param, then in result
+     * will be left sub-tree, right sub-tree, node.
+     * Else if key in current node lesser then searching key, then call split recursively
+     * in right sub-tree.
+     * Else search in left sub-tree.
      *
-     * @param key split key
-     * @return lesserTree, greaterTree, node
+     * @param node node where we split.
+     * @param key  searching key
+     * @param <T>  key type param in node
+     * @param <U>  priority type param in node
+     * @return tree where all keys less than searching key, tree where all keys greater than
+     * searching key and node with searching key if it exists in tree
      */
-    private SplitResult split(T key) {
-        CartesianNode<T, U> node = find(key);
+    private static <T extends Comparable<T>, U extends Comparable<U>> SplitResult<T, U> split(
+            CartesianNode<T, U> node, T key) {
         if (node == null) {
-            // try to find node where parent key is less and current key is greater
-            node = this.getRoot();
-            while (node != null && key.compareTo(node.getKey()) > 0) {
-                node = node.getRight();
+            return new SplitResult<>(null, null, null);
+        }
+        SplitResult<T, U> splitResult;
+        if (key.compareTo(node.getKey()) == 0) {
+            CartesianNode<T, U> lesser = node.getLeft();
+            if (lesser != null) {
+                lesser.setParent(null);
+                lesser.setSide(null);
+                node.setLeft(null);
             }
-            if (node == null) {
-                return new SplitResult(this, null, null);
+
+            CartesianNode<T, U> greater = node.getRight();
+            if (greater != null) {
+                greater.setParent(null);
+                greater.setSide(null);
+                node.setRight(null);
             }
+
             CartesianNode<T, U> parent = node.getParent();
-            if (parent == null) {
-                return new SplitResult(null, this, null);
+            if (parent != null) {
+                if (node.isLeft()) parent.setLeft(null);
+                else parent.setRight(null);
+                node.setParent(null);
             }
-            if (node.isLeft()) parent.setLeft(null);
-            else parent.setRight(null);
-            node.setParent(null);
             node.setSide(null);
-            return new SplitResult(this, new CartesianTree<>(node), null);
-        } else {
+            return new SplitResult<>(lesser, greater, node);
+        } else if (key.compareTo(node.getKey()) < 0) {
+            splitResult = split(node.getLeft(), key);
+            CartesianNode<T, U> greater = splitResult.getGreater();
+
             CartesianNode<T, U> parent = node.getParent();
-            if(parent != null) {
+            if (parent != null) {
                 if (node.isLeft()) parent.setLeft(null);
                 else parent.setRight(null);
                 node.setParent(null);
                 node.setSide(null);
             }
 
-            CartesianTree<T, U> nodeTreeLeft = node.getLeft() != null ? new CartesianTree<>(node.getLeft()) : null;
-            CartesianTree<T, U> nodeTreeRight = node.getRight() != null ? new CartesianTree<>(node.getRight()) : null;
-            return new SplitResult(this, merge(nodeTreeLeft, nodeTreeRight), node);
+            greater = merge(greater, node);
+            splitResult.setGreater(greater);
+        } else {
+            splitResult = split(node.getRight(), key);
+            CartesianNode<T, U> lesser = splitResult.getLesser();
+
+            CartesianNode<T, U> parent = node.getParent();
+            if (parent != null) {
+                if (node.isLeft()) parent.setLeft(null);
+                else parent.setRight(null);
+                node.setParent(null);
+                node.setSide(null);
+            }
+
+            lesser = merge(node, lesser);
+            splitResult.setLesser(lesser);
         }
+        return splitResult;
     }
 
-    class SplitResult {
+    /**
+     * Split tree by key. If tree contains the key,
+     * then result will have two tree and node with that key.
+     * <p>
+     * First tree will have keys lesser than split key and second
+     * tree will have keys greater than split key.
+     * Otherwise if tree does not contains key, then node in result will be null.
+     *
+     * @param key split key
+     * @return lesser, greater, node
+     */
+    private SplitResult<T, U> split(T key) {
+        return split(getRoot(), key);
+    }
+
+    static class SplitResult<T extends Comparable<T>, U extends Comparable<U>> {
         /**
-         * All keys in lesserTree is smaller than key in node.
+         * All keys in lesser is smaller than key in node.
          * If all keys in original tree is greater than split key, this field is null.
          */
-        private CartesianTree<T, U> lesserTree;
+        private CartesianNode<T, U> lesser;
 
         /**
-         * All keys in greaterTree is bigger than key in node.
+         * All keys in greater is bigger than key in node.
          * If all keys in original tree is less than split key, this filed value is null.
          */
-        private CartesianTree<T, U> greaterTree;
+        private CartesianNode<T, U> greater;
 
         /**
          * Node that contains key for split. Not null if tree contains that key, otherwise null.
          */
         private CartesianNode<T, U> node;
 
-        public SplitResult(CartesianTree<T, U> lesserTree, CartesianTree<T, U> greaterTree, CartesianNode<T, U> node) {
-            this.lesserTree = lesserTree;
-            this.greaterTree = greaterTree;
+        public SplitResult(CartesianNode<T, U> lesserTree, CartesianNode<T, U> greaterTree, CartesianNode<T, U> node) {
+            this.lesser = lesserTree;
+            this.greater = greaterTree;
             this.node = node;
         }
 
-        public CartesianTree<T, U> getLesserTree() {
-            return lesserTree;
+        public CartesianNode<T, U> getLesser() {
+            return lesser;
         }
 
-        public CartesianTree<T, U> getGreaterTree() {
-            return greaterTree;
+        public void setLesser(CartesianNode<T, U> lesser) {
+            this.lesser = lesser;
+        }
+
+        public CartesianNode<T, U> getGreater() {
+            return greater;
+        }
+
+        public void setGreater(CartesianNode<T, U> greater) {
+            this.greater = greater;
         }
 
         public CartesianNode<T, U> getNode() {
