@@ -2,7 +2,7 @@ package com.osk.mycol;
 
 public class Utils {
 
-    public static <T extends Comparable<T>> KHeap makeKHeap(int k, T[] elements) {
+    public static <T extends Comparable<T>> KHeap<T> makeKHeap(int k, T[] elements) {
         int half_size = elements.length / k;
         for (int i = half_size; i >= 0; i--) {
             T cur_element = elements[i];
@@ -35,7 +35,7 @@ public class Utils {
         return new KHeap<>(k, elements);
     }
 
-    public static <T extends Comparable<T>> BinaryHeap makeBinaryHeap(T[] elements) {
+    public static <T extends Comparable<T>> BinaryHeap<T> makeBinaryHeap(T[] elements) {
         int t_size = elements.length / 2;
         for (int i = t_size; i >= 0; i--) {
             int left_idx = (i * 2) + 1;
