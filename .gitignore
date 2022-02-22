@@ -9,3 +9,8 @@ gradlew.bat
 AlgorithmAndDataStructures/.idea/
 AlgorithmAndDataStructures/out/
 AlgorithmAndDataStructures/AlgorithmAndDataStructures.iml
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build

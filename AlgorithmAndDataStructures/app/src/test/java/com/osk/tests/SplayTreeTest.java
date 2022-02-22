@@ -2,17 +2,17 @@ package com.osk.tests;
 
 import com.osk.trees.Node;
 import com.osk.trees.SplayTree;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class SplayTreeTest {
 
     private SplayTree<Integer> tree;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         tree = new SplayTree<>(4);
         tree.insert(2);

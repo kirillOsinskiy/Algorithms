@@ -6,14 +6,29 @@ import com.osk.mycol.KHeap;
 import com.osk.mycol.Utils;
 import com.osk.search.BinarySearch;
 import com.osk.search.RandomizedSelect;
-import com.osk.sortings.*;
-import org.junit.Test;
+import com.osk.sortings.ArrayUtils;
+import com.osk.sortings.BinomHeapSort;
+import com.osk.sortings.BottomUpMergeSort;
+import com.osk.sortings.BubbleSort;
+import com.osk.sortings.HeapSort;
+import com.osk.sortings.InsertedSort;
+import com.osk.sortings.InsertedSortBinarySearch;
+import com.osk.sortings.MergeSort;
+import com.osk.sortings.MergeSortMultipleMerge;
+import com.osk.sortings.QuickSort;
+import com.osk.sortings.QuickSortLomuto;
+import com.osk.sortings.QuickSortNotMY;
+import com.osk.sortings.QuickSortTest;
+import com.osk.sortings.SelectedSort;
+import com.osk.sortings.Sorting;
+import com.osk.sortings.TopDownMergeSort;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AlgorithmsTest {
 

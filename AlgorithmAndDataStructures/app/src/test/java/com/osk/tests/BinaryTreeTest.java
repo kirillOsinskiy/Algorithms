@@ -3,14 +3,16 @@ package com.osk.tests;
 import com.osk.trees.BinaryTree;
 import com.osk.trees.Node;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BinaryTreeTest {
 
     private BinaryTree<Integer> tree;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         tree = new BinaryTree<>(4);
         tree.insert(2);
