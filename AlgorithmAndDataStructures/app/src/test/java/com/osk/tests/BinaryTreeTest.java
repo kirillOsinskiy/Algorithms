@@ -54,24 +54,24 @@ public class BinaryTreeTest {
     @Test
     public void testSuccessorPredecessor() {
         assertNull(tree.predecessor(1));
-        assertEquals(new Integer(2), tree.successor(1));
+        assertEquals(Integer.valueOf(2), tree.successor(1));
 
-        assertEquals(new Integer(1), tree.predecessor(2));
-        assertEquals(new Integer(3), tree.successor(2));
+        assertEquals(Integer.valueOf(1), tree.predecessor(2));
+        assertEquals(Integer.valueOf(3), tree.successor(2));
 
-        assertEquals(new Integer(2), tree.predecessor(3));
-        assertEquals(new Integer(4), tree.successor(3));
+        assertEquals(Integer.valueOf(2), tree.predecessor(3));
+        assertEquals(Integer.valueOf(4), tree.successor(3));
 
-        assertEquals(new Integer(3), tree.predecessor(4));
-        assertEquals(new Integer(5), tree.successor(4));
+        assertEquals(Integer.valueOf(3), tree.predecessor(4));
+        assertEquals(Integer.valueOf(5), tree.successor(4));
 
-        assertEquals(new Integer(4), tree.predecessor(5));
-        assertEquals(new Integer(6), tree.successor(5));
+        assertEquals(Integer.valueOf(4), tree.predecessor(5));
+        assertEquals(Integer.valueOf(6), tree.successor(5));
 
-        assertEquals(new Integer(5), tree.predecessor(6));
-        assertEquals(new Integer(7), tree.successor(6));
+        assertEquals(Integer.valueOf(5), tree.predecessor(6));
+        assertEquals(Integer.valueOf(7), tree.successor(6));
 
-        assertEquals(new Integer(6), tree.predecessor(7));
+        assertEquals(Integer.valueOf(6), tree.predecessor(7));
         assertNull(tree.successor(7));
     }
 
